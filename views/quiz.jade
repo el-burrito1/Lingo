@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    form#quizForm(action='#')
+        table.table.table-striped
+            tr
+                th Words to translate
+                th Write your answer
+            for word in words
+                tr
+                    td #{word}
+                    td
+                        input.answer(type='text' name='word' value='bonjour')
+        input#quizSubmit(type='submit')
+      

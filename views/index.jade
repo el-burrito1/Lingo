@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  
+  form#langForm(action='/translate' method='post')
+    input#origLang(type='text' name='originalLang' placeholder='Language of the word to translate' value='fra')
+    input#newLang(type='text' name='newLang' placeholder='Desired language' value='eng')
+    input#coolWord(type='text' name='word' placeholder='Word to translate' value='bonjour')
+    input(type='submit') 
+  
