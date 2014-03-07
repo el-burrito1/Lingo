@@ -2,9 +2,11 @@ extends layout
 
 block content
   
-  form#langForm(action='/translate' method='post')
-    input#origLang(type='text' name='originalLang' placeholder='Language of the word to translate' value='fra')
-    input#newLang(type='text' name='newLang' placeholder='Desired language' value='eng')
-    input#coolWord(type='text' name='word' placeholder='Word to translate' value='bonjour')
-    input(type='submit') 
+  a(href='/translation') Click here to translate a word!  
+
+  h3 Take a quiz!
+    form#quizSpecs(action='/quiz/create' method='post')
+        input#fromLang(type='text' name='fromLang' placeholder='Language you would like to translate from' value='eng')
+        input#toLang(type='text' name='toLang' placeholder='Language you would like to translate into' value='fra')
+        input(type='submit' value='click here to take a quiz!') 
   

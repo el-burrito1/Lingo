@@ -1,25 +1,57 @@
 $(document).on('ready',function(){
+    var currentQuizIndex = 0;
 
-	$('#langForm').on('submit', function(e){
-		e.preventDefault();
-		console.log('test');
 
-		$.post('/translate', $('#langForm').serialize(),function(data){
-			console.log(data);
-			$('#coolWord').val(data.translation);
-			$('#origLang').val(data.to);
-			$('#newLang').val(data.from);
-		});
-	});
+    $('#langForm').on('submit', function(e){
+        e.preventDefault();
+        console.log('test');
 
-	$('#quizForm').on('submit', function(e){
-		e.preventDefault();
-		console.log('test');
+        $.post('/translate', $('#langForm').serialize(),function(data){
+            console.log(data);
+            $('#coolWord').val(data.translation);
+            $('#origLang').val(data.to);
+            $('#newLang').val(data.from);
+        });
+    });
 
-		$.post('/quizanswers', $('#quizForm').serialize(),function(data){
-			console.log(data);
-		});
-	});
+
+    $('#quizForm').on('submit', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            data: {word: $('#answerForm').val(), index: currentQuizIndex},
+            type: 'post',
+            url: '/quizTest'
+        }).done(function(data){
+            $('#answerValidate').html(data.message)
+        })
+
+    $('#nextQuestion').css('visibility','visible')
+
+    });
+
+
+
+        $('#nextQuestion').on('click',function(e){
+        e.preventDefault()
+
+        $('#answerValidate').empty();
+
+            $.ajax({
+                data: {currentWord: $('#question').text(),
+                        index: currentQuizIndex},
+                type: 'post',
+                url: '/next'
+            }).done(function(data){
+                $('#question').text(data.message)
+                currentQuizIndex = data.index
+            })
+
+        })
+
+
+
+
 
 
 

@@ -35,13 +35,38 @@ app.get('/', function (req,res){
 	res.render('index');
 })
 
+///////////////
 app.post('/translate', quizController.translate);
+app.get('/translation', function (req,res){
+	res.render('translation');
+})
+///////////////
 
+app.post('/quiz/create', quizController.create);
 app.get('/quiz', function (req,res){
-	res.render('quiz', {words:languageModel});
+	res.render('quiz', {words:languageModel.english});
 })
 
-app.post('/quizanswers', quizController.checkAnswers);
+////////////////////////
+
+app.post('/quizTest' , quizController.test);
+
+app.post('/next' , function (req,res){
+	var currentIndex = parseInt(req.body.index)
+	console.log(req.body.index)
+	console.log(languageModel.english.length-1)
+	console.log(currentIndex < languageModel.english.length-1)
+
+	if(currentIndex < languageModel.english.length-1){
+		res.send({message: languageModel.english[currentIndex+1], index: currentIndex+1});
+	} else {
+		res.send({message: languageModel.english[0], index: 0});
+	}
+
+	
+})
+
+
 
 
 

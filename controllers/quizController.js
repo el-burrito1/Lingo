@@ -1,3 +1,5 @@
+var model = require('../models/languageModel')
+
 var async = require('async');
 
 var BeGlobal = require('node-beglobal');
@@ -7,17 +9,23 @@ var beglobal = new BeGlobal.BeglobalAPI({
 });
 
 
-// var translation = function(word, originalLang, newLang, callback){
-// 	beglobal.translations.translate(
-//   		{text: word, from: originalLang, to: newLang},
-//   		function(err, results) {
-// 	    	if (err) {
-// 	      	return console.log(err);
-// 	    	}
+var Quiz = function (fromLang, toLang){
+	this.fromLang = fromLang;
+	this.toLang = toLang;
+	this.score = 0;
+	this.iteration = 0;  //1-based
+	this.nextQuestion = function (){};
 
-//     		callback(results);
-//   		}
-// };
+
+};
+
+
+
+
+
+var translatedArray = []
+var finalAnswersArray = [];
+
 
 module.exports = {
 	translate: function (req,res){
@@ -31,6 +39,8 @@ module.exports = {
     		res.send(results);
   		}
 	)},
+
+///////////////////////////////////////////
 
 	checkAnswers: function (req,res){
 
@@ -49,7 +59,7 @@ module.exports = {
 			parallelArray.push(translateFunction);
 		})
 
-		async.parallel(parallelArray,function(err,results){
+		async.series(parallelArray,function(err,results){
 			for(var i=0;i<results.length;i++){
 				answerArray.push(results[i].translation)
 			}
@@ -57,5 +67,52 @@ module.exports = {
 			res.send(answerArray)
 		})
 
-}
+	},
+
+////////////////////////////////////
+
+
+	create: function (req,res){
+		translateFunctionArray = [];
+
+		model.english.map(function(i){
+			var thisFunction = function(callback){
+			beglobal.translations.translate(
+					{text: i, from: 'eng', to: req.body.toLang},
+					function(err, results) {
+    				// callback(null,{word:word,result:results});//to do
+    				callback(null,results);
+				})
+			}
+			translateFunctionArray.push(thisFunction);
+		})
+
+		async.series(translateFunctionArray,function(err,results){
+			for(var i =0;i<results.length;i++){
+				finalAnswersArray.push(results[i].translation)
+			}
+			console.log(finalAnswersArray)
+		})
+
+		res.redirect('/quiz');
+	},
+
+
+
+
+
+
+	test: function(req,res){
+		console.log(req.body)
+		var currentIndex = parseInt(req.body.index)
+		if(req.body.word === model.french[currentIndex]){
+			res.send({message:'Correct answer!', index: currentIndex})
+		} else {
+			res.send({
+				message: 'Sorry, this is not the correct answer. The correct answer is ' + '<b>'+ model.french[currentIndex]+ '</b>',
+				index: currentIndex
+			})
+		}
+
+	}
 };

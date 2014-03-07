@@ -6,10 +6,14 @@ block content
             tr
                 th Words to translate
                 th Write your answer
-            for word in words
                 tr
-                    td #{word}
+                    td#question #{words[0]}
                     td
-                        input.answer(type='text' name='word' value='bonjour')
+                        input#answerForm(type='text' name='word')
         input#quizSubmit(type='submit')
+        p#answerValidate
+    button#nextQuestion(type='button') Next Question!
+
+
+
       
