@@ -9,7 +9,12 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var languageModel = require('./models/languageModel');
+var userModel = require('./models/userModel')
 var quizController = require('./controllers/quizController');
+var mongoose = require('mongoose')
+
+mongoose.connect('mongodb://localhost/quizUsers')
+
 
 var app = express();
 
@@ -32,6 +37,21 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', function (req,res){
+	userModel.create({
+		totalQuizzes:0,
+		passedQuizzes:0,
+		failedQuizzes:0,
+		percentPassed:0,
+		totalAnswered:0,
+		totalCorrect:0,
+		totalFailed:0,
+		percentCorrectWords:0,
+		bestTen:0,
+		worstTen:0,
+		id: 1
+
+	});
+
 	res.render('index');
 })
 
@@ -49,21 +69,24 @@ app.get('/quiz', function (req,res){
 
 ////////////////////////
 
-app.post('/quizTest' , quizController.test);
+app.post('/quizTest' , quizController.testWord);
 
 app.post('/next' , function (req,res){
 	var currentIndex = parseInt(req.body.index)
-	console.log(req.body.index)
-	console.log(languageModel.english.length-1)
-	console.log(currentIndex < languageModel.english.length-1)
-
+	
 	if(currentIndex < languageModel.english.length-1){
 		res.send({message: languageModel.english[currentIndex+1], index: currentIndex+1});
 	} else {
-		res.send({message: languageModel.english[0], index: 0});
+		res.send({message: 'quiz complete', over:'Quiz is over, thanks!'});
 	}
 
-	
+})
+
+app.get('/viewStats' , function (req,res){
+	userModel.find({},function(err,docs){
+		console.log(docs)
+	})
+	res.redirect('/')
 })
 
 

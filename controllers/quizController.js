@@ -1,4 +1,5 @@
-var model = require('../models/languageModel')
+var languageModel = require('../models/languageModel')
+var userModel = require('../models/userModel')
 
 var async = require('async');
 
@@ -8,18 +9,7 @@ var beglobal = new BeGlobal.BeglobalAPI({
   api_token: 'to8Qp3sn88IibzvsJG1Psg%3D%3D'
 });
 
-
-var Quiz = function (fromLang, toLang){
-	this.fromLang = fromLang;
-	this.toLang = toLang;
-	this.score = 0;
-	this.iteration = 0;  //1-based
-	this.nextQuestion = function (){};
-
-
-};
-
-
+var mongoose = require('mongoose')
 
 
 
@@ -73,9 +63,11 @@ module.exports = {
 
 
 	create: function (req,res){
+		userModel.update({id:1},{$inc:{totalQuizzes:1}},function (err,docs){})
+
 		translateFunctionArray = [];
 
-		model.english.map(function(i){
+		languageModel.english.map(function(i){
 			var thisFunction = function(callback){
 			beglobal.translations.translate(
 					{text: i, from: 'eng', to: req.body.toLang},
@@ -102,16 +94,25 @@ module.exports = {
 
 
 
-	test: function(req,res){
-		console.log(req.body)
+	testWord: function(req,res){
+		var answerCount = [];
+		var wrongCount= [];
 		var currentIndex = parseInt(req.body.index)
-		if(req.body.word === model.french[currentIndex]){
+
+		userModel.update({id:1},{$inc:{totalAnswered:1}},function (err,docs){})
+
+		if(req.body.word === languageModel.french[currentIndex]){
 			res.send({message:'Correct answer!', index: currentIndex})
+			answerCount.push(req.body.word)
+
+			userModel.update({id:1},{$inc:{totalCorrect:1}},function (err,docs){})
 		} else {
 			res.send({
-				message: 'Sorry, this is not the correct answer. The correct answer is ' + '<b>'+ model.french[currentIndex]+ '</b>',
+				message: 'Sorry, this is not the correct answer. The correct answer is ' + '<b>'+ languageModel.french[currentIndex]+ '</b>',
 				index: currentIndex
 			})
+
+			userModel.update({id:1},{$inc:{totalFailed:1}},function (err,docs){})
 		}
 
 	}

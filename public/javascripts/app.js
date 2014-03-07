@@ -24,6 +24,7 @@ $(document).on('ready',function(){
             url: '/quizTest'
         }).done(function(data){
             $('#answerValidate').html(data.message)
+            $('#answerValidate').html(data.failMessage)
         })
 
     $('#nextQuestion').css('visibility','visible')
@@ -44,20 +45,11 @@ $(document).on('ready',function(){
                 url: '/next'
             }).done(function(data){
                 $('#question').text(data.message)
+                $('#answerValidate').text(data.over)
                 currentQuizIndex = data.index
             })
 
         })
-
-
-
-
-
-
-
-
-
-
 
 
 })
