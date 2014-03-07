@@ -77,16 +77,15 @@ app.post('/next' , function (req,res){
 	if(currentIndex < languageModel.english.length-1){
 		res.send({message: languageModel.english[currentIndex+1], index: currentIndex+1});
 	} else {
-		res.send({message: 'quiz complete', over:'Quiz is over, thanks!'});
+		res.send({message: 'quiz complete', over:'Quiz is over, thanks!'},{results:(href='#')});
 	}
 
 })
 
 app.get('/viewStats' , function (req,res){
 	userModel.find({},function(err,docs){
-		console.log(docs)
+		res.render('stats', {stats:docs})
 	})
-	res.redirect('/')
 })
 
 

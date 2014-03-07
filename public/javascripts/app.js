@@ -37,6 +37,7 @@ $(document).on('ready',function(){
         e.preventDefault()
 
         $('#answerValidate').empty();
+        $('#answerForm').val('');
 
             $.ajax({
                 data: {currentWord: $('#question').text(),
@@ -45,7 +46,7 @@ $(document).on('ready',function(){
                 url: '/next'
             }).done(function(data){
                 $('#question').text(data.message)
-                $('#answerValidate').text(data.over)
+                $('#answerValidate').text(data.results)
                 currentQuizIndex = data.index
             })
 

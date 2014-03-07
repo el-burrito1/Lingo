@@ -1,0 +1,10 @@
+extends layout
+
+block content
+	p Total quizzes: #{stats[0].totalQuizzes}
+	p Passed quizzes: #{stats[0].passedQuizzes}
+	p Failed quizzes: #{stats[0].failedQuizzes}
+	p Percent passed: #{stats[0].percentPassed}
+	p Total answered: #{stats[0].totalAnswered}
+	p Total correct: #{stats[0].totalCorrect}
+	p Total failed: #{stats[0].totalFailed}

@@ -15,6 +15,7 @@ var mongoose = require('mongoose')
 
 var translatedArray = []
 var finalAnswersArray = [];
+var failCount = 0;
 
 
 module.exports = {
@@ -107,13 +108,21 @@ module.exports = {
 
 			userModel.update({id:1},{$inc:{totalCorrect:1}},function (err,docs){})
 		} else {
+
+			userModel.update({id:1},{$inc:{totalFailed:1}},function (err,docs){})
+			failCount+=1
+				if(failCount === 3){
+				res.send({message: 'Sorry you missed too many questions'})
+				}
+
 			res.send({
 				message: 'Sorry, this is not the correct answer. The correct answer is ' + '<b>'+ languageModel.french[currentIndex]+ '</b>',
 				index: currentIndex
 			})
-
-			userModel.update({id:1},{$inc:{totalFailed:1}},function (err,docs){})
+		
 		}
+
+		
 
 	}
 };
